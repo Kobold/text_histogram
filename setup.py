@@ -10,7 +10,7 @@ readme = open('README.rst').read()
 
 setup(
     name='text_histogram',
-    version='0.0.4',
+    version='0.0.5',
     description='A dependency-free library to quickly make ascii histograms from data.',
     long_description=readme,
     author='Andy Kish, Jehiah Czebotar',
