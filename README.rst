@@ -10,6 +10,9 @@ script use.
     >>> from text_histogram import histogram
     >>> import random
     >>> histogram([random.gauss(50, 20) for _ in xrange(100)])
+
+::
+
     # NumSamples = 100; Min = 1.42; Max = 87.36
     # Mean = 51.848095; Variance = 332.055832; SD = 18.222399; Median 53.239251
     # each ∎ represents a count of 1
