@@ -1,19 +1,11 @@
-==============
-text_histogram
-==============
+`text_histogram`_ |version| |downloads|
+=======================================
 
 Histograms are great. This is `Bit.ly's data_hacks
 <https://github.com/bitly/data_hacks>`_ histogram.py repackaged for convenient
 script use.
 
-.. image:: https://pypip.in/d/text_histogram/badge.png
-    :target: https://pypi.python.org/pypi/text_histogram
-    :alt: Number of PyPI downloads
-
-Usage
-=====
-
-::
+.. code:: python
 
     >>> from text_histogram import histogram
     >>> import random
@@ -36,7 +28,7 @@ Usage
 Installation
 ============
 
-::
+.. code:: bash
 
     $ pip install data_hacks
 
@@ -44,5 +36,18 @@ Why?
 ====
 
 Histograms are great for exploring data, but numpy and matplotlib are heavy and
-overkill for quick analysis. Don't even get me started on installing them.
+overkill for quick analysis. They also can't be easily used on remote servers or
+over ssh. Don't even get me started on installing them.
 
+`data_hacks`_ is pretty great, but difficult to use from python code because it
+directly requires a ``optparse.OptionParser`` to pass histogram options.
+
+.. _data_hacks: https://github.com/bitly/data_hacks
+.. _text_histogram: https://github.com/Kobold/text_histogram
+
+.. |downloads| image:: https://pypip.in/d/text_histogram/badge.png
+   :target: https://pypi.python.org/pypi/text_histogram
+   :alt: Number of PyPI downloads
+.. |version| image:: https://badge.fury.io/py/text_histogram.png
+   :target: http://badge.fury.io/py/text_histogram
+   :alt: PyPI version
