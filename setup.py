@@ -11,7 +11,7 @@ readme = open('README.rst').read()
 setup(
     name='text_histogram',
     version='0.0.3',
-    description='Repackage Bit.ly\'s data_hacks histogram for convenient script use.',
+    description='A dependency-free library to quickly make ascii histograms from data.',
     long_description=readme,
     author='Andy Kish, Jehiah Czebotar',
     author_email='agkish@gmail.com',
