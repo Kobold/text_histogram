@@ -11,9 +11,9 @@ readme = open('README.rst').read()
 setup(
     name='text_histogram',
     version='0.0.1',
-    description='Repackage Bit.ly\'s data_hacks for convenient use.',
+    description='Repackage Bit.ly\'s data_hacks histogram for convenient script use.',
     long_description=readme,
-    author='Andy Kish',
+    author='Andy Kish, Jehiah Czebotar',
     author_email='agkish@gmail.com',
     url='https://github.com/Kobold/text_histogram',
     py_modules=['text_histogram'],

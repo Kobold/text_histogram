@@ -23,11 +23,10 @@ http://www.pandamatak.com/people/anand/xfer/histo
 
 http://github.com/bitly/data_hacks
 """
-
-import sys
 from decimal import Decimal
 import math
-from optparse import OptionParser
+import sys
+
 
 class MVSD(object):
     """ A class that calculates a running Mean / Variance / Standard Deviation"""
@@ -72,19 +71,6 @@ def test_mvsd():
     assert '%.2f' % mvsd.var() == "8.25"
     assert '%.14f' % mvsd.sd() == "2.87228132326901"
 
-def load_stream(input_stream):
-    for line in input_stream:
-        clean_line = line.strip()
-        if not clean_line:
-            # skip empty lines (ie: newlines)
-            continue
-        if clean_line[0] in ['"', "'"]:
-            clean_line = clean_line.strip('"').strip("'")
-        try:
-            yield Decimal(clean_line)
-        except:
-            print >>sys.stderr, "invalid line %r" % line
-
 def median(values):
     length = len(values)
     if length%2:
@@ -101,25 +87,30 @@ def test_median():
     assert "4.50" == "%.2f" % median([4.0,5,2,1,9,10]) #even-sized float list. (4.0+5)/2 = 4.5
 
 
-def histogram(stream, options):
+def histogram(stream, minimum=None, maximum=None, buckets=None, custbuckets=None, calc_msvd=True):
     """
     Loop over the stream and add each entry to the dataset, printing out at the end
 
-    stream yields Decimal()
+
+    minimum: minimum value for graph
+    maximum: maximum value for graph
+    buckets: Number of buckets to use for the histogram
+    custbuckets: Comma seperated list of bucket edges for the histogram
+    calc_msvd: Calculate and display Mean, Variance and SD.
     """
-    if not options.min or not options.max:
+    if not minimum or not maximum:
         # glob the iterator here so we can do min/max on it
         data = list(stream)
     else:
         data = stream
     bucket_scale = 1
 
-    if options.min:
-        min_v = Decimal(options.min)
+    if minimum:
+        min_v = Decimal(minimum)
     else:
         min_v = min(data)
-    if options.max:
-        max_v = Decimal(options.max)
+    if maximum:
+        max_v = Decimal(maximum)
     else:
         max_v = max(data)
 
@@ -129,10 +120,9 @@ def histogram(stream, options):
 
     boundaries = []
     bucket_counts = []
-    buckets = 0
 
-    if options.custbuckets:
-        bound = options.custbuckets.split(',')
+    if custbuckets:
+        bound = custbuckets.split(',')
         bound_sort = sorted(map(Decimal, bound))
 
         # if the last value is smaller than the maximum, replace it
@@ -151,7 +141,7 @@ def histogram(stream, options):
         bucket_counts = [0 for x in range(len(boundaries))]
         buckets = len(boundaries)
     else:
-        buckets = options.buckets and int(options.buckets) or 10
+        buckets = buckets or 10
         if buckets <= 0:
             raise ValueError('# of buckets must be > 0')
         step = diff / buckets
@@ -165,7 +155,7 @@ def histogram(stream, options):
     accepted_data = []
     for value in data:
         samples +=1
-        if options.mvsd:
+        if calc_msvd:
             mvsd.add(value)
             accepted_data.append(value)
         # find the bucket this goes in
@@ -184,7 +174,7 @@ def histogram(stream, options):
     print "# NumSamples = %d; Min = %0.2f; Max = %0.2f" % (samples, min_v, max_v)
     if skipped:
         print "# %d value%s outside of min/max" % (skipped, skipped > 1 and 's' or '')
-    if options.mvsd:
+    if calc_mvsd:
         print "# Mean = %f; Variance = %f; SD = %f; Median %f" % (mvsd.mean(), mvsd.var(), mvsd.sd(), median(accepted_data))
     print "# each ∎ represents a count of %d" % bucket_scale
     bucket_min = min_v
@@ -197,27 +187,4 @@ def histogram(stream, options):
         if bucket_count:
             star_count = bucket_count / bucket_scale
         print '%10.4f - %10.4f [%6d]: %s' % (bucket_min, bucket_max, bucket_count, '∎' * star_count)
-
-
-if __name__ == "__main__":
-    parser = OptionParser()
-    parser.usage = "cat data | %prog [options]"
-    parser.add_option("-m", "--min", dest="min",
-                        help="minimum value for graph")
-    parser.add_option("-x", "--max", dest="max",
-                        help="maximum value for graph")
-    parser.add_option("-b", "--buckets", dest="buckets",
-                        help="Number of buckets to use for the histogram")
-    parser.add_option("-B", "--custom-buckets", dest="custbuckets",
-                        help="Comma seperated list of bucket edges for the histogram")
-    parser.add_option("--no-mvsd", dest="mvsd", action="store_false", default=True,
-                        help="Disable the calculation of Mean, Variance and SD (improves performance)")
-
-    (options, args) = parser.parse_args()
-    if sys.stdin.isatty():
-        # if isatty() that means it's run without anything piped into it
-        parser.print_usage()
-        print "for more help use --help"
-        sys.exit(1)
-    histogram(load_stream(sys.stdin), options)
 
