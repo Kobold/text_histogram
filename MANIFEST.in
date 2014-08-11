@@ -1,0 +1,4 @@
+include LICENSE
+include README.rst
+
+global-exclude *.py[co]
