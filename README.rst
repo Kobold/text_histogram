@@ -39,8 +39,8 @@ Histograms are great for exploring data, but numpy and matplotlib are heavy and
 overkill for quick analysis. They also can't be easily used on remote servers or
 over ssh. Don't even get me started on installing them.
 
-`data_hacks`_ is pretty great, but difficult to use from python code because it
-directly requires a ``optparse.OptionParser`` to pass histogram options.
+`data_hacks`_ is pretty great, but difficult to use from python code directly
+because it requires a ``optparse.OptionParser`` to pass histogram options.
 
 .. _data_hacks: https://github.com/bitly/data_hacks
 .. _text_histogram: https://github.com/Kobold/text_histogram
