@@ -1,9 +1,16 @@
-`text_histogram`_ |version| |downloads|
-=======================================
+text_histogram
+==============
 
-Histograms are great. This is `Bit.ly's data_hacks
-<https://github.com/bitly/data_hacks>`_ histogram.py repackaged for convenient
-script use.
+|version| |downloads|
+
+Histograms are great for exploring data, but numpy and matplotlib are heavy and
+overkill for quick analysis. They also can't be easily used on remote servers
+over ssh. Don't even get me started on installing them.
+
+`Bit.ly's data_hacks <https://github.com/bitly/data_hacks>`_ histogram.py is
+great but difficult to use from python code directly (it requires an
+``optparse.OptionParser`` to pass histogram options). This is histogram.py
+repackaged for convenient script use.
 
 ::
 
@@ -30,20 +37,11 @@ Installation
 
 .. code:: bash
 
-    $ pip install data_hacks
+    $ pip install text_histogram
 
-Why?
-====
 
-Histograms are great for exploring data, but numpy and matplotlib are heavy and
-overkill for quick analysis. They also can't be easily used on remote servers or
-over ssh. Don't even get me started on installing them.
+Source: https://github.com/Kobold/text_histogram
 
-`data_hacks`_ is pretty great, but difficult to use from python code directly
-because it requires an ``optparse.OptionParser`` to pass histogram options.
-
-.. _data_hacks: https://github.com/bitly/data_hacks
-.. _text_histogram: https://github.com/Kobold/text_histogram
 
 .. |downloads| image:: https://pypip.in/d/text_histogram/badge.png
    :target: https://pypi.python.org/pypi/text_histogram
