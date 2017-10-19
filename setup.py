@@ -20,6 +20,7 @@ setup(
     license='Apache License, Version 2.0',
     zip_safe=True,
     classifiers=[
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 2",
         'Development Status :: 4 - Beta',
         'Environment :: Console',
