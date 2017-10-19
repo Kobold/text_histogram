@@ -28,7 +28,6 @@ from __future__ import print_function
 
 from decimal import Decimal
 import math
-import sys
 
 
 class MVSD(object):
