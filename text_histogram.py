@@ -105,14 +105,14 @@ def histogram(stream, minimum=None, maximum=None, buckets=None, custbuckets=None
         data = stream
     bucket_scale = 1
 
-    if minimum:
+    if minimum is not None:
         min_v = Decimal(minimum)
     else:
-        min_v = min(data)
-    if maximum:
+        min_v = Decimal(min(data))
+    if maximum is not None:
         max_v = Decimal(maximum)
     else:
-        max_v = max(data)
+        max_v = Decimal(max(data))
 
     if not max_v > min_v:
         raise ValueError('max must be > min. max:%s min:%s' % (max_v, min_v))
