@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright 2010 bit.ly
@@ -74,9 +74,9 @@ def test_mvsd():
 def median(values):
     length = len(values)
     if length%2:
-        median_indeces = [length/2]
+        median_indeces = [length//2]
     else:
-        median_indeces = [length/2-1, length/2]
+        median_indeces = [length//2-1, length//2]
 
     values = sorted(values)
     return sum([values[i] for i in median_indeces]) / len(median_indeces)
@@ -87,7 +87,10 @@ def test_median():
     assert "4.50" == "%.2f" % median([4.0,5,2,1,9,10]) #even-sized float list. (4.0+5)/2 = 4.5
 
 
-def histogram(stream, minimum=None, maximum=None, buckets=None, custbuckets=None, calc_msvd=True):
+DEFAULT_graph_char = u'\u2592'
+DEFAULT_display_empty_buckets = True
+
+def histogram(stream, minimum=None, maximum=None, buckets=None, custbuckets=None, calc_msvd=True, graph_char=None, display_empty_buckets=None):
     """
     Loop over the stream and add each entry to the dataset, printing out at the end
 
@@ -97,7 +100,13 @@ def histogram(stream, minimum=None, maximum=None, buckets=None, custbuckets=None
     buckets: Number of buckets to use for the histogram
     custbuckets: Comma seperated list of bucket edges for the histogram
     calc_msvd: Calculate and display Mean, Variance and SD.
+    graph_char: Character to display for counts in histogram/bar.
+    display_empty_buckets: if False, do not show empty buckets in display.
     """
+    if not stream:
+        raise NotImplementedError('No suport for empty data stream')
+    graph_char = graph_char or DEFAULT_graph_char
+    display_empty_buckets = display_empty_buckets or DEFAULT_display_empty_buckets
     if not minimum or not maximum:
         # glob the iterator here so we can do min/max on it
         data = list(stream)
@@ -105,16 +114,16 @@ def histogram(stream, minimum=None, maximum=None, buckets=None, custbuckets=None
         data = stream
     bucket_scale = 1
 
-    if minimum:
+    if minimum is not None:
         min_v = Decimal(minimum)
     else:
-        min_v = min(data)
-    if maximum:
+        min_v = Decimal(min(data))
+    if maximum is not None:
         max_v = Decimal(maximum)
     else:
-        max_v = max(data)
+        max_v = Decimal(max(data))
 
-    if not max_v > min_v:
+    if not max_v >= min_v:
         raise ValueError('max must be > min. max:%s min:%s' % (max_v, min_v))
     diff = max_v - min_v
 
@@ -171,12 +180,12 @@ def histogram(stream, minimum=None, maximum=None, buckets=None, custbuckets=None
     if max(bucket_counts) > 75:
         bucket_scale = int(max(bucket_counts) / 75)
 
-    print "# NumSamples = %d; Min = %0.2f; Max = %0.2f" % (samples, min_v, max_v)
+    print("# NumSamples = %d; Min = %0.2f; Max = %0.2f" % (samples, min_v, max_v))
     if skipped:
-        print "# %d value%s outside of min/max" % (skipped, skipped > 1 and 's' or '')
+        print("# %d value%s outside of min/max" % (skipped, skipped > 1 and 's' or ''))
     if calc_msvd:
-        print "# Mean = %f; Variance = %f; SD = %f; Median %f" % (mvsd.mean(), mvsd.var(), mvsd.sd(), median(accepted_data))
-    print "# each ∎ represents a count of %d" % bucket_scale
+        print("# Mean = %f; Variance = %f; SD = %f; Median %f" % (mvsd.mean(), mvsd.var(), mvsd.sd(), median(accepted_data)))
+    print("# each %s represents a count of %d" % (graph_char, bucket_scale))
     bucket_min = min_v
     bucket_max = min_v
     for bucket in range(buckets):
@@ -185,6 +194,7 @@ def histogram(stream, minimum=None, maximum=None, buckets=None, custbuckets=None
         bucket_count = bucket_counts[bucket]
         star_count = 0
         if bucket_count:
-            star_count = bucket_count / bucket_scale
-        print '%10.4f - %10.4f [%6d]: %s' % (bucket_min, bucket_max, bucket_count, '∎' * star_count)
+            star_count = int(bucket_count / bucket_scale)
+        if display_empty_buckets or bucket_count:
+            print('%11.4f - %11.4f [%6d]: %s' % (bucket_min, bucket_max, bucket_count, graph_char * star_count))  # TODO dynamically calc length of max value and generate string format on the fly
 
